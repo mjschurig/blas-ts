@@ -1,6 +1,6 @@
 {
   "name": "blas-ts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pure TypeScript implementation of BLAS (Basic Linear Algebra Subprograms)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
