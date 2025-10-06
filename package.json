@@ -1,0 +1,54 @@
+{
+  "name": "blas-ts",
+  "version": "1.0.0",
+  "description": "Pure TypeScript implementation of BLAS (Basic Linear Algebra Subprograms)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "echo \"Linting will be added later\" && exit 0"
+  },
+  "keywords": [
+    "blas",
+    "linear-algebra",
+    "typescript",
+    "mathematics",
+    "numerical-computing"
+  ],
+  "author": "Max",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/blas-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/blas-ts/issues"
+  },
+  "homepage": "https://github.com/username/blas-ts#readme",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.6.2",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "random-js": "^2.1.0"
+  }
+}
