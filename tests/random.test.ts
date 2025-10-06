@@ -89,9 +89,6 @@ describe("Random", () => {
         C,
         3
       );
-
-      console.log(C);
-
       expect(C).toEqual(expected);
     });
   });
@@ -114,7 +111,6 @@ describe("Random", () => {
         C,
         3
       );
-      console.log(C);
       expect(C).toEqual(expected);
     });
     it("should compute C = alpha*A*A^T + beta*C with upper triangle", () => {
