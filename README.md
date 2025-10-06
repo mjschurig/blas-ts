@@ -212,9 +212,7 @@ MIT
 ### Future Enhancements 🚀
 
 - [ ] Complex number support (ZGEMM, ZAXPY, etc.)
-- [ ] Single precision support (SGEMM, SAXPY, etc.)
 - [ ] Performance benchmarks
-- [ ] SIMD optimizations (where available)
 - [ ] Additional Level 1 operations (DSDOT, DROTM, DROTMG)
 - [ ] Banded matrix operations (DGBMV, DSBMV, etc.)
 - [ ] Packed storage format support (DSPMV, DSPR, etc.)
