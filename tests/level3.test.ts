@@ -696,7 +696,7 @@ describe("BLAS Level 3", () => {
       expect(C[7]).toBeCloseTo(0.0);
     });
 
-    it("should compute C = alpha*A*B^T + alpha*B*A^T + beta*C with lower triangle", () => {
+    it("should compute C = alpha*A*B^T + alpha*B*A^T + beta*C with alpha and beta", () => {
       const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
       const B = [2.0, 1.0, 1.0, 3.0]; // 2x2 matrix
       const C = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix

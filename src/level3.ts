@@ -489,7 +489,6 @@ export function dtrsm(
 
   // Test the input parameters
   const lside = side === BLASSide.Left;
-  const nrowA = lside ? m : n;
   const nounit = diag === BLASDiag.NonUnit;
   const upper = uplo === BLASUplo.Upper;
 

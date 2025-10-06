@@ -488,7 +488,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
       const a = 3;
       const b = 4;
 
-      const { c, s, r, z } = drotg(a, b);
+      const { c, s, r } = drotg(a, b);
 
       // Check that rotation zeros out b: c*a + s*b should equal r
       // and -s*a + c*b should be 0 (or very close to 0)
@@ -530,7 +530,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
       const a = 1;
       const b = 1;
 
-      const { c, s, r, z } = drotg(a, b);
+      const { c, s, r } = drotg(a, b);
 
       // c^2 + s^2 should equal 1
       expect(c * c + s * s).toBeCloseTo(1, 10);
