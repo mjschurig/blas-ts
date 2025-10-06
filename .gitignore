@@ -24,3 +24,8 @@ coverage/
 .env.production.local
 
 .pnpm-store/
+
+.onCreateCommandMarker
+.postCreateCommandMarker
+.postStartCommandMarker
+.updateContentCommandMarker
