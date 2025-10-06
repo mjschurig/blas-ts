@@ -5,8 +5,14 @@
  * in pure TypeScript, following the reference FORTRAN BLAS implementations.
  */
 
-// Export types
-export { Vector } from "./types";
+// Export BLAS types
+export {
+  Transpose as BLASTranspose,
+  Triangular as BLASUplo,
+  Diagonal as BLASDiag,
+  Side as BLASSide,
+  Complex,
+} from "./types";
 
 // Export Level 1 BLAS operations
 export {

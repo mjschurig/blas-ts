@@ -1,5 +1,3 @@
-import { Vector } from "./types";
-
 /**
  * DAXPY: constant times a vector plus a vector (y = alpha*x + y)
  *
@@ -11,9 +9,9 @@ import { Vector } from "./types";
 export function daxpy(
   n: number,
   alpha: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): void {
   // Early returns
@@ -59,7 +57,12 @@ export function daxpy(
  * @param alpha - scalar multiplier
  * @param x - input/output vector x (modified in place)
  */
-export function dscal(n: number, alpha: number, x: Vector, incx: number): void {
+export function dscal(
+  n: number,
+  alpha: number,
+  x: Float64Array,
+  incx: number
+): void {
   // Early returns
   if (n <= 0 || incx <= 0 || alpha === 1.0) return;
 
@@ -100,9 +103,9 @@ export function dscal(n: number, alpha: number, x: Vector, incx: number): void {
  */
 export function dcopy(
   n: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): void {
   // Early return
@@ -151,9 +154,9 @@ export function dcopy(
  */
 export function dswap(
   n: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): void {
   // Early return
@@ -214,9 +217,9 @@ export function dswap(
  */
 export function ddot(
   n: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): number {
   let dtemp = 0.0;
@@ -269,7 +272,7 @@ export function ddot(
  * @param x - input vector x
  * @returns the Euclidean norm of x
  */
-export function dnrm2(n: number, x: Vector, incx: number): number {
+export function dnrm2(n: number, x: Float64Array, incx: number): number {
   // Early return
   if (n <= 0) return 0.0;
 
@@ -320,7 +323,7 @@ export function dnrm2(n: number, x: Vector, incx: number): number {
  * @param x - input vector x
  * @returns the sum of absolute values of x
  */
-export function dasum(n: number, x: Vector, incx: number): number {
+export function dasum(n: number, x: Float64Array, incx: number): number {
   let dtemp = 0.0;
 
   // Early returns
@@ -367,7 +370,7 @@ export function dasum(n: number, x: Vector, incx: number): number {
  * @param x - input vector x
  * @returns the index of the element with the maximum absolute value
  */
-export function idamax(n: number, x: Vector, incx: number): number {
+export function idamax(n: number, x: Float64Array, incx: number): number {
   // Early returns
   if (n < 1 || incx <= 0) return 0;
   if (n === 1) return 0;
@@ -468,9 +471,9 @@ export function drotg(
  */
 export function drot(
   n: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number,
   c: number,
   s: number

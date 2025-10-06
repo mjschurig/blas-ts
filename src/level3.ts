@@ -1,18 +1,18 @@
-import { Matrix, BLASTranspose, BLASUplo, BLASDiag, BLASSide } from "./types";
+import { Transpose, Triangular, Diagonal, Side } from "./types";
 
 export function dgemm(
-  transA: BLASTranspose,
-  transB: BLASTranspose,
+  transA: Transpose,
+  transB: Transpose,
   m: number,
   n: number,
   k: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  B: Matrix,
+  B: Float64Array,
   ldB: number,
   beta: number,
-  C: Matrix,
+  C: Float64Array,
   ldC: number
 ): void {
   // ✅ IMPLEMENTED: Following ./packages/numeric/reference-implementation/BLAS/SRC/dgemm.f
@@ -21,23 +21,23 @@ export function dgemm(
 
   // Set NOTA and NOTB as true if A and B respectively are not transposed
   // and set NROWA and NROWB as the number of rows of A and B respectively
-  const notA = transA === BLASTranspose.NoTranspose;
-  const notB = transB === BLASTranspose.NoTranspose;
+  const notA = transA === Transpose.NoTranspose;
+  const notB = transB === Transpose.NoTranspose;
   const nrowA = notA ? m : k;
   const nrowB = notB ? k : n;
 
   // Input validation
   if (
-    transA !== BLASTranspose.NoTranspose &&
-    transA !== BLASTranspose.Transpose &&
-    transA !== BLASTranspose.ConjugateTranspose
+    transA !== Transpose.NoTranspose &&
+    transA !== Transpose.Transpose &&
+    transA !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DGEMM: Invalid TRANSA parameter");
   }
   if (
-    transB !== BLASTranspose.NoTranspose &&
-    transB !== BLASTranspose.Transpose &&
-    transB !== BLASTranspose.ConjugateTranspose
+    transB !== Transpose.NoTranspose &&
+    transB !== Transpose.Transpose &&
+    transB !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DGEMM: Invalid TRANSB parameter");
   }
@@ -150,17 +150,17 @@ export function dgemm(
 }
 
 export function dsymm(
-  side: BLASSide,
-  uplo: BLASUplo,
+  side: Side,
+  uplo: Triangular,
   m: number,
   n: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  B: Matrix,
+  B: Float64Array,
   ldB: number,
   beta: number,
-  C: Matrix,
+  C: Float64Array,
   ldC: number
 ): void {
   // ✅ IMPLEMENTED: Following ./packages/numeric/reference-implementation/BLAS/SRC/dsymm.f
@@ -168,14 +168,14 @@ export function dsymm(
   // where A is a symmetric matrix
 
   // Set NROWA as the number of rows of A
-  const nrowA = side === BLASSide.Left ? m : n;
-  const upper = uplo === BLASUplo.Upper;
+  const nrowA = side === Side.Left ? m : n;
+  const upper = uplo === Triangular.Upper;
 
   // Input validation
-  if (side !== BLASSide.Left && side !== BLASSide.Right) {
+  if (side !== Side.Left && side !== Side.Right) {
     throw new Error("DSYMM: Invalid SIDE parameter");
   }
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYMM: Invalid UPLO parameter");
   }
   if (m < 0) throw new Error("DSYMM: M must be >= 0");
@@ -209,7 +209,7 @@ export function dsymm(
   }
 
   // Start the operations
-  if (side === BLASSide.Left) {
+  if (side === Side.Left) {
     // Form C := alpha*A*B + beta*C
     if (upper) {
       for (let j = 0; j < n; j++) {
@@ -276,16 +276,16 @@ export function dsymm(
 }
 
 export function dtrmm(
-  side: BLASSide,
-  uplo: BLASUplo,
-  transA: BLASTranspose,
-  diag: BLASDiag,
+  side: Side,
+  uplo: Triangular,
+  transA: Transpose,
+  diag: Diagonal,
   m: number,
   n: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  B: Matrix,
+  B: Float64Array,
   ldB: number
 ): void {
   // ✅ IMPLEMENTED: Following ./packages/numeric/reference-implementation/BLAS/SRC/dtrmm.f
@@ -293,26 +293,26 @@ export function dtrmm(
   // where A is triangular
 
   // Test the input parameters
-  const lside = side === BLASSide.Left;
+  const lside = side === Side.Left;
   const nrowA = lside ? m : n;
-  const nounit = diag === BLASDiag.NonUnit;
-  const upper = uplo === BLASUplo.Upper;
+  const nounit = diag === Diagonal.NonUnit;
+  const upper = uplo === Triangular.Upper;
 
   // Input validation
-  if (side !== BLASSide.Left && side !== BLASSide.Right) {
+  if (side !== Side.Left && side !== Side.Right) {
     throw new Error("DTRMM: Invalid SIDE parameter");
   }
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DTRMM: Invalid UPLO parameter");
   }
   if (
-    transA !== BLASTranspose.NoTranspose &&
-    transA !== BLASTranspose.Transpose &&
-    transA !== BLASTranspose.ConjugateTranspose
+    transA !== Transpose.NoTranspose &&
+    transA !== Transpose.Transpose &&
+    transA !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DTRMM: Invalid TRANSA parameter");
   }
-  if (diag !== BLASDiag.Unit && diag !== BLASDiag.NonUnit) {
+  if (diag !== Diagonal.Unit && diag !== Diagonal.NonUnit) {
     throw new Error("DTRMM: Invalid DIAG parameter");
   }
   if (m < 0) throw new Error("DTRMM: M must be >= 0");
@@ -336,7 +336,7 @@ export function dtrmm(
 
   // Start the operations
   if (lside) {
-    if (transA === BLASTranspose.NoTranspose) {
+    if (transA === Transpose.NoTranspose) {
       // Form B := alpha*A*B
       if (upper) {
         for (let j = 0; j < n; j++) {
@@ -392,7 +392,7 @@ export function dtrmm(
       }
     }
   } else {
-    if (transA === BLASTranspose.NoTranspose) {
+    if (transA === Transpose.NoTranspose) {
       // Form B := alpha*B*A
       if (upper) {
         for (let j = n - 1; j >= 0; j--) {
@@ -471,16 +471,16 @@ export function dtrmm(
 }
 
 export function dtrsm(
-  side: BLASSide,
-  uplo: BLASUplo,
-  transA: BLASTranspose,
-  diag: BLASDiag,
+  side: Side,
+  uplo: Triangular,
+  transA: Transpose,
+  diag: Diagonal,
   m: number,
   n: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  B: Matrix,
+  B: Float64Array,
   ldB: number
 ): void {
   // ✅ IMPLEMENTED: Following ./packages/numeric/reference-implementation/BLAS/SRC/dtrsm.f
@@ -488,9 +488,9 @@ export function dtrsm(
   // where A is triangular and X is overwritten on B
 
   // Test the input parameters
-  const lside = side === BLASSide.Left;
-  const nounit = diag === BLASDiag.NonUnit;
-  const upper = uplo === BLASUplo.Upper;
+  const lside = side === Side.Left;
+  const nounit = diag === Diagonal.NonUnit;
+  const upper = uplo === Triangular.Upper;
 
   // Quick return if possible
   if (m === 0 || n === 0) return;
@@ -507,7 +507,7 @@ export function dtrsm(
 
   // Start the operations
   if (lside) {
-    if (transA === BLASTranspose.NoTranspose) {
+    if (transA === Transpose.NoTranspose) {
       // Form B := alpha*inv(A)*B
       if (upper) {
         for (let j = 0; j < n; j++) {
@@ -571,7 +571,7 @@ export function dtrsm(
       }
     }
   } else {
-    if (transA === BLASTranspose.NoTranspose) {
+    if (transA === Transpose.NoTranspose) {
       // Form B := alpha*B*inv(A)
       if (upper) {
         for (let j = 0; j < n; j++) {
@@ -670,32 +670,32 @@ export function dtrsm(
 }
 
 export function dsyrk(
-  uplo: BLASUplo,
-  trans: BLASTranspose,
+  uplo: Triangular,
+  trans: Transpose,
   n: number,
   k: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
   beta: number,
-  C: Matrix,
+  C: Float64Array,
   ldC: number
 ): void {
   // DSYRK: performs one of the symmetric rank k operations
   // C := alpha*A*A^T + beta*C  or  C := alpha*A^T*A + beta*C
 
   // Determine the number of rows of A
-  const nrowA = trans === BLASTranspose.NoTranspose ? n : k;
-  const upper = uplo === BLASUplo.Upper;
+  const nrowA = trans === Transpose.NoTranspose ? n : k;
+  const upper = uplo === Triangular.Upper;
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYRK: Invalid UPLO parameter");
   }
   if (
-    trans !== BLASTranspose.NoTranspose &&
-    trans !== BLASTranspose.Transpose &&
-    trans !== BLASTranspose.ConjugateTranspose
+    trans !== Transpose.NoTranspose &&
+    trans !== Transpose.Transpose &&
+    trans !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DSYRK: Invalid TRANS parameter");
   }
@@ -745,7 +745,7 @@ export function dsyrk(
   }
 
   // Start the operations
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     // Form C := alpha*A*A^T + beta*C
     if (upper) {
       for (let j = 0; j < n; j++) {
@@ -823,34 +823,34 @@ export function dsyrk(
 }
 
 export function dsyr2k(
-  uplo: BLASUplo,
-  trans: BLASTranspose,
+  uplo: Triangular,
+  trans: Transpose,
   n: number,
   k: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  B: Matrix,
+  B: Float64Array,
   ldB: number,
   beta: number,
-  C: Matrix,
+  C: Float64Array,
   ldC: number
 ): void {
   // DSYR2K: performs one of the symmetric rank 2k operations
   // C := alpha*A*B^T + alpha*B*A^T + beta*C  or  C := alpha*A^T*B + alpha*B^T*A + beta*C
 
   // Determine the number of rows of A and B
-  const nrowA = trans === BLASTranspose.NoTranspose ? n : k;
-  const upper = uplo === BLASUplo.Upper;
+  const nrowA = trans === Transpose.NoTranspose ? n : k;
+  const upper = uplo === Triangular.Upper;
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYR2K: Invalid UPLO parameter");
   }
   if (
-    trans !== BLASTranspose.NoTranspose &&
-    trans !== BLASTranspose.Transpose &&
-    trans !== BLASTranspose.ConjugateTranspose
+    trans !== Transpose.NoTranspose &&
+    trans !== Transpose.Transpose &&
+    trans !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DSYR2K: Invalid TRANS parameter");
   }
@@ -867,13 +867,15 @@ export function dsyr2k(
     return;
   }
 
+  const index = (i: number, j: number) => i + j * ldC;
+
   // And when alpha equals zero
   if (alpha === 0.0) {
     if (upper) {
       if (beta === 0.0) {
         for (let j = 0; j < n; j++) {
           for (let i = 0; i <= j; i++) {
-            C[i + j * ldC] = 0.0;
+            C[index(i, j)] = 0.0;
           }
         }
       } else {
@@ -902,7 +904,7 @@ export function dsyr2k(
   }
 
   // Start the operations
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     // Form C := alpha*A*B^T + alpha*B*A^T + beta*C
     if (upper) {
       for (let j = 0; j < n; j++) {

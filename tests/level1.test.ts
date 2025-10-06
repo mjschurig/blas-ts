@@ -16,9 +16,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should compute y = alpha*x + y correctly (basic case)", () => {
       const n = 4;
       const alpha = 2.0;
-      const x = [1, 2, 3, 4];
-      const y = [10, 20, 30, 40];
-      const expected = [12, 24, 36, 48]; // y + alpha*x = [10,20,30,40] + 2*[1,2,3,4]
+      const x = new Float64Array([1, 2, 3, 4]);
+      const y = new Float64Array([10, 20, 30, 40]);
+      const expected = new Float64Array([12, 24, 36, 48]); // y + alpha*x = new Float64Array([10,20,30,40]) + 2*new Float64Array([1,2,3,4])
 
       daxpy(n, alpha, x, 1, y, 1);
 
@@ -28,9 +28,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle alpha = 0 (early return)", () => {
       const n = 3;
       const alpha = 0.0;
-      const x = [1, 2, 3];
-      const y = [10, 20, 30];
-      const expected = [10, 20, 30]; // y should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([10, 20, 30]);
+      const expected = new Float64Array([10, 20, 30]); // y should remain unchanged
 
       daxpy(n, alpha, x, 1, y, 1);
 
@@ -40,9 +40,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
       const alpha = 2.0;
-      const x = [1, 2, 3];
-      const y = [10, 20, 30];
-      const expected = [10, 20, 30]; // y should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([10, 20, 30]);
+      const expected = new Float64Array([10, 20, 30]); // y should remain unchanged
 
       daxpy(n, alpha, x, 1, y, 1);
 
@@ -52,9 +52,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle different increments", () => {
       const n = 2;
       const alpha = 3.0;
-      const x = [1, 0, 2, 0]; // effective x = [1, 2] with incx = 2
-      const y = [10, 0, 20, 0]; // effective y = [10, 20] with incy = 2
-      const expected = [13, 0, 26, 0]; // y[0] = 10 + 3*1 = 13, y[2] = 20 + 3*2 = 26
+      const x = new Float64Array([1, 0, 2, 0]); // effective x = new Float64Array([1, 2]) with incx = 2
+      const y = new Float64Array([10, 0, 20, 0]); // effective y = new Float64Array([10, 20]) with incy = 2
+      const expected = new Float64Array([13, 0, 26, 0]); // y[0] = 10 + 3*1 = 13, y[2] = 20 + 3*2 = 26
 
       daxpy(n, alpha, x, 2, y, 2);
 
@@ -64,23 +64,25 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle negative increments", () => {
       const n = 2;
       const alpha = 2.0;
-      const x = [1, 2]; // Will be accessed in reverse due to negative increment
-      const y = [10, 20];
+      const x = new Float64Array([1, 2]); // Will be accessed in reverse due to negative increment
+      const y = new Float64Array([10, 20]);
 
       daxpy(n, alpha, x, -1, y, -1);
 
       // With negative increments, access pattern is reversed
       // First iteration: y[1] = y[1] + alpha * x[1] = 20 + 2*2 = 24
       // Second iteration: y[0] = y[0] + alpha * x[0] = 10 + 2*1 = 12
-      expect(y).toEqual([12, 24]);
+      expect(y).toEqual(new Float64Array([12, 24]));
     });
 
     it("should handle unrolled loop optimization (n >= 4)", () => {
       const n = 8;
       const alpha = 0.5;
-      const x = [1, 2, 3, 4, 5, 6, 7, 8];
-      const y = [10, 20, 30, 40, 50, 60, 70, 80];
-      const expected = [10.5, 21, 31.5, 42, 52.5, 63, 73.5, 84];
+      const x = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8]);
+      const y = new Float64Array([10, 20, 30, 40, 50, 60, 70, 80]);
+      const expected = new Float64Array([
+        10.5, 21, 31.5, 42, 52.5, 63, 73.5, 84,
+      ]);
 
       daxpy(n, alpha, x, 1, y, 1);
 
@@ -91,8 +93,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DDOT - Dot Product", () => {
     it("should compute dot product correctly (basic case)", () => {
       const n = 4;
-      const x = [1, 2, 3, 4];
-      const y = [2, 3, 4, 5];
+      const x = new Float64Array([1, 2, 3, 4]);
+      const y = new Float64Array([2, 3, 4, 5]);
       const expected = 1 * 2 + 2 * 3 + 3 * 4 + 4 * 5; // = 2 + 6 + 12 + 20 = 40
 
       const result = ddot(n, x, 1, y, 1);
@@ -102,8 +104,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
-      const y = [4, 5, 6];
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([4, 5, 6]);
 
       const result = ddot(n, x, 1, y, 1);
 
@@ -112,8 +114,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [1, 0, 3, 0]; // effective x = [1, 3] with incx = 2
-      const y = [2, 0, 4, 0]; // effective y = [2, 4] with incy = 2
+      const x = new Float64Array([1, 0, 3, 0]); // effective x = new Float64Array([1, 3]) with incx = 2
+      const y = new Float64Array([2, 0, 4, 0]); // effective y = new Float64Array([2, 4]) with incy = 2
       const expected = 1 * 2 + 3 * 4; // = 2 + 12 = 14
 
       const result = ddot(n, x, 2, y, 2);
@@ -123,8 +125,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle negative increments", () => {
       const n = 3;
-      const x = [1, 2, 3];
-      const y = [4, 5, 6];
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([4, 5, 6]);
 
       const result = ddot(n, x, -1, y, -1);
 
@@ -135,8 +137,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle unrolled loop optimization (n >= 5)", () => {
       const n = 10;
-      const x = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-      const y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const x = new Float64Array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+      const y = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       const expected = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10; // = 55
 
       const result = ddot(n, x, 1, y, 1);
@@ -146,8 +148,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle floating point precision", () => {
       const n = 3;
-      const x = [0.1, 0.2, 0.3];
-      const y = [0.4, 0.5, 0.6];
+      const x = new Float64Array([0.1, 0.2, 0.3]);
+      const y = new Float64Array([0.4, 0.5, 0.6]);
       const expected = 0.1 * 0.4 + 0.2 * 0.5 + 0.3 * 0.6; // = 0.04 + 0.1 + 0.18 = 0.32
 
       const result = ddot(n, x, 1, y, 1);
@@ -159,9 +161,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DCOPY - Vector Copy", () => {
     it("should copy vector correctly (basic case)", () => {
       const n = 4;
-      const x = [1, 2, 3, 4];
-      const y = [0, 0, 0, 0];
-      const expected = [1, 2, 3, 4];
+      const x = new Float64Array([1, 2, 3, 4]);
+      const y = new Float64Array([0, 0, 0, 0]);
+      const expected = new Float64Array([1, 2, 3, 4]);
 
       dcopy(n, x, 1, y, 1);
 
@@ -170,9 +172,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
-      const y = [10, 20, 30];
-      const expected = [10, 20, 30]; // y should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([10, 20, 30]);
+      const expected = new Float64Array([10, 20, 30]); // y should remain unchanged
 
       dcopy(n, x, 1, y, 1);
 
@@ -181,9 +183,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [1, 0, 3, 0]; // effective x = [1, 3] with incx = 2
-      const y = [0, 99, 0, 99]; // effective y = [y[0], y[2]] with incy = 2
-      const expected = [1, 99, 3, 99]; // Copy x[0]->y[0], x[2]->y[2]
+      const x = new Float64Array([1, 0, 3, 0]); // effective x = new Float64Array([1, 3]) with incx = 2
+      const y = new Float64Array([0, 99, 0, 99]); // effective y = [y[0], y[2]] with incy = 2
+      const expected = new Float64Array([1, 99, 3, 99]); // Copy x[0]->y[0], x[2]->y[2]
 
       dcopy(n, x, 2, y, 2);
 
@@ -192,9 +194,9 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle unrolled loop optimization (n >= 7)", () => {
       const n = 10;
-      const x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      const y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      const expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const x = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      const y = new Float64Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      const expected = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
       dcopy(n, x, 1, y, 1);
 
@@ -206,8 +208,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should scale vector correctly (basic case)", () => {
       const n = 4;
       const alpha = 2.0;
-      const x = [1, 2, 3, 4];
-      const expected = [2, 4, 6, 8];
+      const x = new Float64Array([1, 2, 3, 4]);
+      const expected = new Float64Array([2, 4, 6, 8]);
 
       dscal(n, alpha, x, 1);
 
@@ -217,8 +219,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle alpha = 1 (early return)", () => {
       const n = 3;
       const alpha = 1.0;
-      const x = [1, 2, 3];
-      const expected = [1, 2, 3]; // x should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const expected = new Float64Array([1, 2, 3]); // x should remain unchanged
 
       dscal(n, alpha, x, 1);
 
@@ -228,8 +230,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
       const alpha = 2.0;
-      const x = [1, 2, 3];
-      const expected = [1, 2, 3]; // x should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const expected = new Float64Array([1, 2, 3]); // x should remain unchanged
 
       dscal(n, alpha, x, 1);
 
@@ -239,8 +241,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle incx <= 0 (early return)", () => {
       const n = 3;
       const alpha = 2.0;
-      const x = [1, 2, 3];
-      const expected = [1, 2, 3]; // x should remain unchanged
+      const x = new Float64Array([1, 2, 3]);
+      const expected = new Float64Array([1, 2, 3]); // x should remain unchanged
 
       dscal(n, alpha, x, 0);
 
@@ -250,8 +252,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle different increment", () => {
       const n = 2;
       const alpha = 3.0;
-      const x = [1, 99, 2, 99]; // effective x = [1, 2] with incx = 2
-      const expected = [3, 99, 6, 99]; // Scale x[0] and x[2]
+      const x = new Float64Array([1, 99, 2, 99]); // effective x = new Float64Array([1, 2]) with incx = 2
+      const expected = new Float64Array([3, 99, 6, 99]); // Scale x[0] and x[2]
 
       dscal(n, alpha, x, 2);
 
@@ -261,8 +263,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
     it("should handle unrolled loop optimization (n >= 5)", () => {
       const n = 8;
       const alpha = 0.5;
-      const x = [2, 4, 6, 8, 10, 12, 14, 16];
-      const expected = [1, 2, 3, 4, 5, 6, 7, 8];
+      const x = new Float64Array([2, 4, 6, 8, 10, 12, 14, 16]);
+      const expected = new Float64Array([1, 2, 3, 4, 5, 6, 7, 8]);
 
       dscal(n, alpha, x, 1);
 
@@ -273,10 +275,10 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DSWAP - Vector Swap", () => {
     it("should swap vectors correctly (basic case)", () => {
       const n = 4;
-      const x = [1, 2, 3, 4];
-      const y = [10, 20, 30, 40];
-      const expectedX = [10, 20, 30, 40];
-      const expectedY = [1, 2, 3, 4];
+      const x = new Float64Array([1, 2, 3, 4]);
+      const y = new Float64Array([10, 20, 30, 40]);
+      const expectedX = new Float64Array([10, 20, 30, 40]);
+      const expectedY = new Float64Array([1, 2, 3, 4]);
 
       dswap(n, x, 1, y, 1);
 
@@ -286,10 +288,10 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
-      const y = [10, 20, 30];
-      const expectedX = [1, 2, 3];
-      const expectedY = [10, 20, 30];
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([10, 20, 30]);
+      const expectedX = new Float64Array([1, 2, 3]);
+      const expectedY = new Float64Array([10, 20, 30]);
 
       dswap(n, x, 1, y, 1);
 
@@ -299,10 +301,10 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [1, 99, 3, 99]; // effective x = [1, 3] with incx = 2
-      const y = [10, 88, 30, 88]; // effective y = [10, 30] with incy = 2
-      const expectedX = [10, 99, 30, 99];
-      const expectedY = [1, 88, 3, 88];
+      const x = new Float64Array([1, 99, 3, 99]); // effective x = new Float64Array([1, 3]) with incx = 2
+      const y = new Float64Array([10, 88, 30, 88]); // effective y = new Float64Array([10, 30]) with incy = 2
+      const expectedX = new Float64Array([10, 99, 30, 99]);
+      const expectedY = new Float64Array([1, 88, 3, 88]);
 
       dswap(n, x, 2, y, 2);
 
@@ -312,10 +314,10 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle unrolled loop optimization (n >= 3)", () => {
       const n = 6;
-      const x = [1, 2, 3, 4, 5, 6];
-      const y = [10, 20, 30, 40, 50, 60];
-      const expectedX = [10, 20, 30, 40, 50, 60];
-      const expectedY = [1, 2, 3, 4, 5, 6];
+      const x = new Float64Array([1, 2, 3, 4, 5, 6]);
+      const y = new Float64Array([10, 20, 30, 40, 50, 60]);
+      const expectedX = new Float64Array([10, 20, 30, 40, 50, 60]);
+      const expectedY = new Float64Array([1, 2, 3, 4, 5, 6]);
 
       dswap(n, x, 1, y, 1);
 
@@ -327,7 +329,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DNRM2 - Euclidean Norm", () => {
     it("should compute norm correctly (basic case)", () => {
       const n = 3;
-      const x = [3, 4, 0]; // ||x||_2 = sqrt(3^2 + 4^2 + 0^2) = 5
+      const x = new Float64Array([3, 4, 0]); // ||x||_2 = sqrt(3^2 + 4^2 + 0^2) = 5
       const expected = 5;
 
       const result = dnrm2(n, x, 1);
@@ -337,7 +339,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
+      const x = new Float64Array([1, 2, 3]);
 
       const result = dnrm2(n, x, 1);
 
@@ -346,7 +348,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [3, 0, 4, 0]; // effective x = [3, 4] with incx = 2
+      const x = new Float64Array([3, 0, 4, 0]); // effective x = new Float64Array([3, 4]) with incx = 2
       const expected = 5; // sqrt(3^2 + 4^2) = 5
 
       const result = dnrm2(n, x, 2);
@@ -356,7 +358,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle all zeros", () => {
       const n = 3;
-      const x = [0, 0, 0];
+      const x = new Float64Array([0, 0, 0]);
 
       const result = dnrm2(n, x, 1);
 
@@ -365,7 +367,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle numerical stability with scaling", () => {
       const n = 2;
-      const x = [1e10, 1e10]; // Large values that could cause overflow
+      const x = new Float64Array([1e10, 1e10]); // Large values that could cause overflow
       const expected = Math.sqrt(2) * 1e10;
 
       const result = dnrm2(n, x, 1);
@@ -377,7 +379,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DASUM - Sum of Absolute Values", () => {
     it("should compute sum of absolute values correctly (basic case)", () => {
       const n = 4;
-      const x = [1, -2, 3, -4];
+      const x = new Float64Array([1, -2, 3, -4]);
       const expected = 1 + 2 + 3 + 4; // = 10
 
       const result = dasum(n, x, 1);
@@ -387,7 +389,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
+      const x = new Float64Array([1, 2, 3]);
 
       const result = dasum(n, x, 1);
 
@@ -396,7 +398,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle incx <= 0 (early return)", () => {
       const n = 3;
-      const x = [1, 2, 3];
+      const x = new Float64Array([1, 2, 3]);
 
       const result = dasum(n, x, 0);
 
@@ -405,7 +407,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [-1, 99, -3, 99]; // effective x = [-1, -3] with incx = 2
+      const x = new Float64Array([-1, 99, -3, 99]); // effective x = new Float64Array([-1, -3]) with incx = 2
       const expected = 1 + 3; // = 4
 
       const result = dasum(n, x, 2);
@@ -415,7 +417,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle unrolled loop optimization (n >= 6)", () => {
       const n = 8;
-      const x = [-1, -2, -3, -4, -5, -6, -7, -8];
+      const x = new Float64Array([-1, -2, -3, -4, -5, -6, -7, -8]);
       const expected = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8; // = 36
 
       const result = dasum(n, x, 1);
@@ -427,7 +429,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("IDAMAX - Index of Maximum Absolute Value", () => {
     it("should find index of maximum absolute value (basic case)", () => {
       const n = 4;
-      const x = [1, -5, 3, 2]; // max |x[i]| = |-5| = 5 at index 1
+      const x = new Float64Array([1, -5, 3, 2]); // max |x[i]| = |-5| = 5 at index 1
       const expected = 1; // 0-based index
 
       const result = idamax(n, x, 1);
@@ -437,7 +439,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n < 1 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
+      const x = new Float64Array([1, 2, 3]);
 
       const result = idamax(n, x, 1);
 
@@ -446,7 +448,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle incx <= 0 (early return)", () => {
       const n = 3;
-      const x = [1, 2, 3];
+      const x = new Float64Array([1, 2, 3]);
 
       const result = idamax(n, x, 0);
 
@@ -455,7 +457,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n == 1", () => {
       const n = 1;
-      const x = [42];
+      const x = new Float64Array([42]);
 
       const result = idamax(n, x, 1);
 
@@ -464,7 +466,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 3;
-      const x = [1, 99, -10, 99, 2, 99]; // effective x = [1, -10, 2] with incx = 2
+      const x = new Float64Array([1, 99, -10, 99, 2, 99]); // effective x = new Float64Array([1, -10, 2]) with incx = 2
       const expected = 1; // max |x[i]| = |-10| = 10 at index 1
 
       const result = idamax(n, x, 2);
@@ -474,7 +476,7 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should return first occurrence for ties", () => {
       const n = 3;
-      const x = [5, -5, 3]; // both |5| and |-5| are maximum, should return first
+      const x = new Float64Array([5, -5, 3]); // both |5| and |-5| are maximum, should return first
       const expected = 0;
 
       const result = idamax(n, x, 1);
@@ -543,8 +545,8 @@ describe("BLAS Level 1 - Vector Operations", () => {
   describe("DROT - Apply Plane Rotation", () => {
     it("should apply rotation correctly (basic case)", () => {
       const n = 2;
-      const x = [1, 2];
-      const y = [3, 4];
+      const x = new Float64Array([1, 2]);
+      const y = new Float64Array([3, 4]);
       const c = Math.cos(Math.PI / 4); // 45 degrees
       const s = Math.sin(Math.PI / 4);
 
@@ -564,10 +566,10 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle n <= 0 (early return)", () => {
       const n = 0;
-      const x = [1, 2, 3];
-      const y = [4, 5, 6];
-      const expectedX = [1, 2, 3];
-      const expectedY = [4, 5, 6];
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([4, 5, 6]);
+      const expectedX = new Float64Array([1, 2, 3]);
+      const expectedY = new Float64Array([4, 5, 6]);
 
       drot(n, x, 1, y, 1, 0.5, 0.5);
 
@@ -577,24 +579,24 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle different increments", () => {
       const n = 2;
-      const x = [1, 99, 2, 99]; // effective x = [1, 2] with incx = 2
-      const y = [3, 88, 4, 88]; // effective y = [3, 4] with incy = 2
+      const x = new Float64Array([1, 99, 2, 99]); // effective x = new Float64Array([1, 2]) with incx = 2
+      const y = new Float64Array([3, 88, 4, 88]); // effective y = new Float64Array([3, 4]) with incy = 2
       const c = 1.0;
       const s = 0.0; // Identity rotation
 
       drot(n, x, 2, y, 2, c, s);
 
       // With identity rotation, x and y should remain unchanged
-      expect(x).toEqual([1, 99, 2, 99]);
-      expect(y).toEqual([3, 88, 4, 88]);
+      expect(x).toEqual(new Float64Array([1, 99, 2, 99]));
+      expect(y).toEqual(new Float64Array([3, 88, 4, 88]));
     });
 
     it("should handle identity rotation (c=1, s=0)", () => {
       const n = 3;
-      const x = [1, 2, 3];
-      const y = [4, 5, 6];
-      const expectedX = [1, 2, 3];
-      const expectedY = [4, 5, 6];
+      const x = new Float64Array([1, 2, 3]);
+      const y = new Float64Array([4, 5, 6]);
+      const expectedX = new Float64Array([1, 2, 3]);
+      const expectedY = new Float64Array([4, 5, 6]);
 
       drot(n, x, 1, y, 1, 1.0, 0.0);
 
@@ -604,14 +606,14 @@ describe("BLAS Level 1 - Vector Operations", () => {
 
     it("should handle 90-degree rotation (c=0, s=1)", () => {
       const n = 2;
-      const x = [1, 2];
-      const y = [3, 4];
+      const x = new Float64Array([1, 2]);
+      const y = new Float64Array([3, 4]);
 
       drot(n, x, 1, y, 1, 0.0, 1.0);
 
       // 90-degree rotation: x' = y, y' = -x
-      expect(x).toEqual([3, 4]);
-      expect(y).toEqual([-1, -2]);
+      expect(x).toEqual(new Float64Array([3, 4]));
+      expect(y).toEqual(new Float64Array([-1, -2]));
     });
   });
 });

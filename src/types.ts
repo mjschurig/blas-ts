@@ -1,22 +1,20 @@
-export type Vector = number[];
-export type Matrix = number[]; // Column-major storage: A[i,j] = A[i + j * ldA]
 // BLAS-specific types following Fortran conventions
-export enum BLASTranspose {
-  NoTranspose,
-  Transpose,
-  ConjugateTranspose,
+export enum Transpose {
+  NoTranspose = "N",
+  Transpose = "T",
+  ConjugateTranspose = "C",
 }
-export enum BLASUplo {
-  Upper,
-  Lower,
+export enum Triangular {
+  Upper = "U",
+  Lower = "L",
 }
-export enum BLASDiag {
-  NonUnit,
-  Unit,
+export enum Diagonal {
+  NonUnit = "N",
+  Unit = "U",
 }
-export enum BLASSide {
-  Left,
-  Right,
+export enum Side {
+  Left = "L",
+  Right = "R",
 }
 
 // Complex number representation

@@ -1,4 +1,4 @@
-import { BLASTranspose, Matrix, Vector, BLASUplo, BLASDiag } from "./types";
+import { Transpose, Triangular, Diagonal } from "./types";
 
 /**
  * DGEMV: performs y := alpha*A*x + beta*y or y := alpha*A^T*x + beta*y
@@ -16,16 +16,16 @@ import { BLASTranspose, Matrix, Vector, BLASUplo, BLASDiag } from "./types";
  * @param incy - increment for elements of y
  */
 export function dgemv(
-  trans: BLASTranspose,
+  trans: Transpose,
   m: number,
   n: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
   beta: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): void {
   // DGEMV: performs y := alpha*A*x + beta*y or y := alpha*A^T*x + beta*y
@@ -42,7 +42,7 @@ export function dgemv(
 
   // Set vector lengths and start points
   let lenx: number, leny: number;
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     lenx = n;
     leny = m;
   } else {
@@ -83,7 +83,7 @@ export function dgemv(
 
   if (alpha === 0.0) return;
 
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     // Form y := alpha*A*x + y
     let jx = kx;
     if (incy === 1) {
@@ -143,21 +143,21 @@ export function dgemv(
  * @param y - input/output vector
  */
 export function dsymv(
-  uplo: BLASUplo,
+  uplo: Triangular,
   n: number,
   alpha: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
   beta: number,
-  y: Vector,
+  y: Float64Array,
   incy: number
 ): void {
   // DSYMV: performs y := alpha*A*x + beta*y for symmetric matrix A
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYMV: Invalid UPLO parameter");
   }
   if (n < 0) throw new Error("DSYMV: N must be >= 0");
@@ -202,7 +202,7 @@ export function dsymv(
 
   if (alpha === 0.0) return;
 
-  if (uplo === BLASUplo.Upper) {
+  if (uplo === Triangular.Upper) {
     // Form y when A is stored in upper triangle
     if (incx === 1 && incy === 1) {
       for (let j = 0; j < n; j++) {
@@ -298,29 +298,29 @@ export function dsymv(
  * @param x - input/output vector
  */
 export function dtrmv(
-  uplo: BLASUplo,
-  trans: BLASTranspose,
-  diag: BLASDiag,
+  uplo: Triangular,
+  trans: Transpose,
+  diag: Diagonal,
   n: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  x: Vector,
+  x: Float64Array,
   incx: number
 ): void {
   // DTRMV: performs x := A*x or x := A^T*x where A is triangular
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DTRMV: Invalid UPLO parameter");
   }
   if (
-    trans !== BLASTranspose.NoTranspose &&
-    trans !== BLASTranspose.Transpose &&
-    trans !== BLASTranspose.ConjugateTranspose
+    trans !== Transpose.NoTranspose &&
+    trans !== Transpose.Transpose &&
+    trans !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DTRMV: Invalid TRANS parameter");
   }
-  if (diag !== BLASDiag.Unit && diag !== BLASDiag.NonUnit) {
+  if (diag !== Diagonal.Unit && diag !== Diagonal.NonUnit) {
     throw new Error("DTRMV: Invalid DIAG parameter");
   }
   if (n < 0) throw new Error("DTRMV: N must be >= 0");
@@ -330,7 +330,7 @@ export function dtrmv(
   // Quick return if possible
   if (n === 0) return;
 
-  const nounit = diag === BLASDiag.NonUnit;
+  const nounit = diag === Diagonal.NonUnit;
 
   // Set up start point in X if increment is not unity
   let kx = 0;
@@ -340,9 +340,9 @@ export function dtrmv(
     kx = 0;
   }
 
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     // Form x := A*x
-    if (uplo === BLASUplo.Upper) {
+    if (uplo === Triangular.Upper) {
       if (incx === 1) {
         for (let j = 0; j < n; j++) {
           if (x[j] !== 0.0) {
@@ -398,7 +398,7 @@ export function dtrmv(
     }
   } else {
     // Form x := A^T*x
-    if (uplo === BLASUplo.Upper) {
+    if (uplo === Triangular.Upper) {
       if (incx === 1) {
         for (let j = n - 1; j >= 0; j--) {
           let temp = x[j];
@@ -460,30 +460,30 @@ export function dtrmv(
  * @param x - input/output vector
  */
 export function dtrsv(
-  uplo: BLASUplo,
-  trans: BLASTranspose,
-  diag: BLASDiag,
+  uplo: Triangular,
+  trans: Transpose,
+  diag: Diagonal,
   n: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number,
-  x: Vector,
+  x: Float64Array,
   incx: number
 ): void {
   // ✅ IMPLEMENTED: Following ./packages/numeric/reference-implementation/BLAS/SRC/dtrsv.f
   // DTRSV: solves A*x = b or A^T*x = b where A is triangular
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DTRSV: Invalid UPLO parameter");
   }
   if (
-    trans !== BLASTranspose.NoTranspose &&
-    trans !== BLASTranspose.Transpose &&
-    trans !== BLASTranspose.ConjugateTranspose
+    trans !== Transpose.NoTranspose &&
+    trans !== Transpose.Transpose &&
+    trans !== Transpose.ConjugateTranspose
   ) {
     throw new Error("DTRSV: Invalid TRANS parameter");
   }
-  if (diag !== BLASDiag.Unit && diag !== BLASDiag.NonUnit) {
+  if (diag !== Diagonal.Unit && diag !== Diagonal.NonUnit) {
     throw new Error("DTRSV: Invalid DIAG parameter");
   }
   if (n < 0) throw new Error("DTRSV: N must be >= 0");
@@ -493,7 +493,7 @@ export function dtrsv(
   // Quick return if possible
   if (n === 0) return;
 
-  const nounit = diag === BLASDiag.NonUnit;
+  const nounit = diag === Diagonal.NonUnit;
 
   // Set up start point in X if increment is not unity
   let kx = 0;
@@ -503,9 +503,9 @@ export function dtrsv(
     kx = 0;
   }
 
-  if (trans === BLASTranspose.NoTranspose) {
+  if (trans === Transpose.NoTranspose) {
     // Form x := inv(A)*x
-    if (uplo === BLASUplo.Upper) {
+    if (uplo === Triangular.Upper) {
       if (incx === 1) {
         for (let j = n - 1; j >= 0; j--) {
           if (x[j] !== 0.0) {
@@ -560,7 +560,7 @@ export function dtrsv(
     }
   } else {
     // Form x := inv(A^T)*x
-    if (uplo === BLASUplo.Upper) {
+    if (uplo === Triangular.Upper) {
       if (incx === 1) {
         for (let j = 0; j < n; j++) {
           let temp = x[j];
@@ -625,11 +625,11 @@ export function dger(
   m: number,
   n: number,
   alpha: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number
 ): void {
   // DGER: performs the rank 1 operation A := alpha*x*y^T + A
@@ -683,18 +683,18 @@ export function dger(
  * @param A - input/output matrix
  */
 export function dsyr(
-  uplo: BLASUplo,
+  uplo: Triangular,
   n: number,
   alpha: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number
 ): void {
   // DSYR: performs the symmetric rank 1 operation A := alpha*x*x^T + A
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYR: Invalid UPLO parameter");
   }
   if (n < 0) throw new Error("DSYR: N must be >= 0");
@@ -712,7 +712,7 @@ export function dsyr(
     kx = 0;
   }
 
-  if (uplo === BLASUplo.Upper) {
+  if (uplo === Triangular.Upper) {
     // Form A when A is stored in upper triangle
     if (incx === 1) {
       for (let j = 0; j < n; j++) {
@@ -779,20 +779,20 @@ export function dsyr(
  * @param ldA - leading dimension of A
  */
 export function dsyr2(
-  uplo: BLASUplo,
+  uplo: Triangular,
   n: number,
   alpha: number,
-  x: Vector,
+  x: Float64Array,
   incx: number,
-  y: Vector,
+  y: Float64Array,
   incy: number,
-  A: Matrix,
+  A: Float64Array,
   ldA: number
 ): void {
   // DSYR2: performs the symmetric rank 2 operation A := alpha*x*y^T + alpha*y*x^T + A
 
   // Input validation
-  if (uplo !== BLASUplo.Upper && uplo !== BLASUplo.Lower) {
+  if (uplo !== Triangular.Upper && uplo !== Triangular.Lower) {
     throw new Error("DSYR2: Invalid UPLO parameter");
   }
   if (n < 0) throw new Error("DSYR2: N must be >= 0");
@@ -811,7 +811,7 @@ export function dsyr2(
     ky = incy > 0 ? 0 : -(n - 1) * incy;
   }
 
-  if (uplo === BLASUplo.Upper) {
+  if (uplo === Triangular.Upper) {
     // Form A when A is stored in the upper triangle
     if (incx === 1 && incy === 1) {
       for (let j = 0; j < n; j++) {

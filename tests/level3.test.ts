@@ -1,17 +1,17 @@
 import { dgemm, dsymm, dsyrk, dtrmm, dtrsm, dsyr2k } from "../src/level3";
-import { BLASTranspose, BLASUplo, BLASDiag, BLASSide } from "../src/types";
+import { Transpose, Triangular, Diagonal, Side } from "../src/types";
 
 describe("BLAS Level 3", () => {
   describe("DGEMM (Double precision general matrix multiply)", () => {
     it("should compute C = alpha*A*B + beta*C correctly", () => {
-      // Column-major storage: A = [[1,3],[2,4]] stored as [1,3,2,4]
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0]; // 2x2 matrix
+      // Column-major storage: A = [new Float64Array([1,3]),new Float64Array([2,4])] stored as new Float64Array([1,3,2,4])
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.NoTranspose,
+        Transpose.NoTranspose,
+        Transpose.NoTranspose,
         2,
         2,
         2,
@@ -25,20 +25,20 @@ describe("BLAS Level 3", () => {
         2
       );
 
-      expect(C[0]).toBeCloseTo(19.0); // C[0,0]
-      expect(C[1]).toBeCloseTo(43.0); // C[1,0]
-      expect(C[2]).toBeCloseTo(22.0); // C[0,1]
-      expect(C[3]).toBeCloseTo(50.0); // C[1,1]
+      expect(C[0]).toBeCloseTo(19.0); // Cnew Float64Array([0,0])
+      expect(C[1]).toBeCloseTo(43.0); // Cnew Float64Array([1,0])
+      expect(C[2]).toBeCloseTo(22.0); // Cnew Float64Array([0,1])
+      expect(C[3]).toBeCloseTo(50.0); // Cnew Float64Array([1,1])
     });
 
     it("should handle A transpose", () => {
-      const A = [1.0, 2.0, 3.0, 4.0]; // 2x2 matrix - transposed storage
-      const B = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 2.0, 3.0, 4.0]); // 2x2 matrix - transposed storage
+      const B = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.Transpose,
-        BLASTranspose.NoTranspose,
+        Transpose.Transpose,
+        Transpose.NoTranspose,
         2,
         2,
         2,
@@ -59,13 +59,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle B transpose", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [5.0, 6.0, 7.0, 8.0]; // 2x2 matrix - transposed storage
-      const C = [0.0, 0.0, 0.0, 0.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([5.0, 6.0, 7.0, 8.0]); // 2x2 matrix - transposed storage
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.Transpose,
+        Transpose.NoTranspose,
+        Transpose.Transpose,
         2,
         2,
         2,
@@ -86,13 +86,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle both A and B transpose", () => {
-      const A = [1.0, 2.0, 3.0, 4.0]; // 2x2 matrix - transposed storage
-      const B = [5.0, 6.0, 7.0, 8.0]; // 2x2 matrix - transposed storage
-      const C = [0.0, 0.0, 0.0, 0.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 2.0, 3.0, 4.0]); // 2x2 matrix - transposed storage
+      const B = new Float64Array([5.0, 6.0, 7.0, 8.0]); // 2x2 matrix - transposed storage
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.Transpose,
-        BLASTranspose.Transpose,
+        Transpose.Transpose,
+        Transpose.Transpose,
         2,
         2,
         2,
@@ -113,13 +113,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha and beta scaling", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix
-      const C = [1.0, 1.0, 1.0, 1.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 0.0, 0.0, 1.0]); // 2x2 identity matrix
+      const C = new Float64Array([1.0, 1.0, 1.0, 1.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.NoTranspose,
+        Transpose.NoTranspose,
+        Transpose.NoTranspose,
         2,
         2,
         2,
@@ -140,13 +140,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle rectangular matrices", () => {
-      const A = [1.0, 4.0, 2.0, 5.0, 3.0, 6.0]; // 2x3 matrix
-      const B = [7.0, 9.0, 11.0, 8.0, 10.0, 12.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 4.0, 2.0, 5.0, 3.0, 6.0]); // 2x3 matrix
+      const B = new Float64Array([7.0, 9.0, 11.0, 8.0, 10.0, 12.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.NoTranspose,
+        Transpose.NoTranspose,
+        Transpose.NoTranspose,
         2,
         2,
         3,
@@ -167,13 +167,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha = 0", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
-      const C = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
+      const C = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.NoTranspose,
+        Transpose.NoTranspose,
+        Transpose.NoTranspose,
         2,
         2,
         2,
@@ -194,13 +194,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle beta = 0", () => {
-      const A = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix
-      const B = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
-      const C = [99.0, 99.0, 99.0, 99.0]; // 2x2 matrix - should be overwritten
+      const A = new Float64Array([1.0, 0.0, 0.0, 1.0]); // 2x2 identity matrix
+      const B = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
+      const C = new Float64Array([99.0, 99.0, 99.0, 99.0]); // 2x2 matrix - should be overwritten
 
       dgemm(
-        BLASTranspose.NoTranspose,
-        BLASTranspose.NoTranspose,
+        Transpose.NoTranspose,
+        Transpose.NoTranspose,
         2,
         2,
         2,
@@ -224,13 +224,13 @@ describe("BLAS Level 3", () => {
   describe("DSYMM (Double precision symmetric matrix multiply)", () => {
     it("should compute C = alpha*A*B + beta*C with left side, upper triangle", () => {
       // Symmetric matrix A (upper triangle stored)
-      const A = [2.0, 0.0, 0.0, 3.0, 5.0, 0.0, 4.0, 6.0, 7.0]; // 3x3 matrix
-      const B = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x2 matrix
+      const A = new Float64Array([2.0, 0.0, 0.0, 3.0, 5.0, 0.0, 4.0, 6.0, 7.0]); // 3x3 matrix
+      const B = new Float64Array([1.0, 3.0, 5.0, 2.0, 4.0, 6.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x2 matrix
 
-      dsymm(BLASSide.Left, BLASUplo.Upper, 3, 2, 1.0, A, 3, B, 3, 0.0, C, 3);
+      dsymm(Side.Left, Triangular.Upper, 3, 2, 1.0, A, 3, B, 3, 0.0, C, 3);
 
-      // Expected: A_symmetric * B where A_symmetric = [[2,3,4],[3,5,6],[4,6,7]]
+      // Expected: A_symmetric * B where A_symmetric = [new Float64Array([2,3,4]),new Float64Array([3,5,6]),new Float64Array([4,6,7])]
       expect(C[0]).toBeCloseTo(31.0); // 2*1 + 3*3 + 4*5
       expect(C[1]).toBeCloseTo(48.0); // 3*1 + 5*3 + 6*5
       expect(C[2]).toBeCloseTo(57.0); // 4*1 + 6*3 + 7*5
@@ -241,11 +241,11 @@ describe("BLAS Level 3", () => {
 
     it("should compute C = alpha*A*B + beta*C with left side, lower triangle", () => {
       // Symmetric matrix A (lower triangle stored)
-      const A = [2.0, 3.0, 4.0, 0.0, 5.0, 6.0, 0.0, 0.0, 7.0]; // 3x3 matrix
-      const B = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x2 matrix
+      const A = new Float64Array([2.0, 3.0, 4.0, 0.0, 5.0, 6.0, 0.0, 0.0, 7.0]); // 3x3 matrix
+      const B = new Float64Array([1.0, 3.0, 5.0, 2.0, 4.0, 6.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x2 matrix
 
-      dsymm(BLASSide.Left, BLASUplo.Lower, 3, 2, 1.0, A, 3, B, 3, 0.0, C, 3);
+      dsymm(Side.Left, Triangular.Lower, 3, 2, 1.0, A, 3, B, 3, 0.0, C, 3);
 
       expect(C[0]).toBeCloseTo(31.0);
       expect(C[1]).toBeCloseTo(48.0);
@@ -256,13 +256,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should compute C = alpha*B*A + beta*C with right side", () => {
-      const A = [2.0, 0.0, 3.0, 5.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x2 matrix
+      const A = new Float64Array([2.0, 0.0, 3.0, 5.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 5.0, 2.0, 4.0, 6.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x2 matrix
 
-      dsymm(BLASSide.Right, BLASUplo.Upper, 3, 2, 1.0, A, 2, B, 3, 0.0, C, 3);
+      dsymm(Side.Right, Triangular.Upper, 3, 2, 1.0, A, 2, B, 3, 0.0, C, 3);
 
-      // Expected: B * A_symmetric where A_symmetric = [[2,3],[3,5]]
+      // Expected: B * A_symmetric where A_symmetric = [new Float64Array([2,3]),new Float64Array([3,5])]
       expect(C[0]).toBeCloseTo(8.0); // 1*2 + 2*3
       expect(C[1]).toBeCloseTo(18.0); // 3*2 + 4*3
       expect(C[2]).toBeCloseTo(28.0); // 5*2 + 6*3
@@ -272,11 +272,11 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha and beta scaling", () => {
-      const A = [2.0, 3.0, 0.0, 5.0]; // 2x2 matrix - lower triangle
-      const B = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix
-      const C = [1.0, 1.0, 1.0, 1.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 3.0, 0.0, 5.0]); // 2x2 matrix - lower triangle
+      const B = new Float64Array([1.0, 0.0, 0.0, 1.0]); // 2x2 identity matrix
+      const C = new Float64Array([1.0, 1.0, 1.0, 1.0]); // 2x2 matrix
 
-      dsymm(BLASSide.Left, BLASUplo.Lower, 2, 2, 2.0, A, 2, B, 2, 3.0, C, 2);
+      dsymm(Side.Left, Triangular.Lower, 2, 2, 2.0, A, 2, B, 2, 3.0, C, 2);
 
       expect(C[0]).toBeCloseTo(7.0); // 2*(2*1) + 3*1
       expect(C[1]).toBeCloseTo(9.0); // 2*(3*1) + 3*1
@@ -287,12 +287,12 @@ describe("BLAS Level 3", () => {
 
   describe("DSYRK (Double precision symmetric rank-k update)", () => {
     it("should compute C = alpha*A*A^T + beta*C with lower triangle", () => {
-      const A = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x3 matrix
+      const A = new Float64Array([1.0, 3.0, 5.0, 2.0, 4.0, 6.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x3 matrix
 
       dsyrk(
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
+        Triangular.Lower,
+        Transpose.NoTranspose,
         3,
         2,
         1.0,
@@ -318,21 +318,10 @@ describe("BLAS Level 3", () => {
     });
 
     it("should compute C = alpha*A^T*A + beta*C with upper triangle", () => {
-      const A = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]; // 2x3 matrix
-      const C = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]; // 3x3 identity matrix
+      const A = new Float64Array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0]); // 2x3 matrix
+      const C = new Float64Array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]); // 3x3 identity matrix
 
-      dsyrk(
-        BLASUplo.Upper,
-        BLASTranspose.Transpose,
-        3,
-        2,
-        2.0,
-        A,
-        2,
-        1.0,
-        C,
-        3
-      );
+      dsyrk(Triangular.Upper, Transpose.Transpose, 3, 2, 2.0, A, 2, 1.0, C, 3);
 
       // Expected: C = 2*A^T*A + I (lower triangle only)
       expect(C[0]).toBeCloseTo(11.0); // 2*(1*1 + 2*2) + 1
@@ -349,10 +338,10 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha = 0", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const C = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const C = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
 
-      dsyrk(BLASUplo.Lower, BLASTranspose.NoTranspose, 2, 2, 0, A, 2, 2, C, 2);
+      dsyrk(Triangular.Lower, Transpose.NoTranspose, 2, 2, 0, A, 2, 2, C, 2);
 
       // C = 0*A*A^T + 2*C = 2*C
       expect(C[0]).toBeCloseTo(10.0);
@@ -364,14 +353,14 @@ describe("BLAS Level 3", () => {
   describe("DTRSM (Double precision triangular solve)", () => {
     it("should solve upper triangular system from left", () => {
       // Upper triangular matrix A
-      const A = [2.0, 0.0, 3.0, 4.0]; // 2x2 matrix
-      const B = [14.0, 16.0, 16.0, 20.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 3.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([14.0, 16.0, 16.0, 20.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Left,
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Upper,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -389,14 +378,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should solve lower triangular system from left", () => {
-      const A = [2.0, 3.0, 0.0, 4.0]; // 2x2 matrix
-      const B = [2.0, 19.0, 4.0, 23.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 3.0, 0.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([2.0, 19.0, 4.0, 23.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -414,14 +403,14 @@ describe("BLAS Level 3", () => {
 
     it("should solve with unit diagonal", () => {
       // Unit lower triangular (diagonal assumed to be 1)
-      const A = [999.0, 3.0, 0.0, 999.0]; // 2x2 matrix - diagonal values ignored
-      const B = [1.0, 7.0, 2.0, 8.0]; // 2x2 matrix
+      const A = new Float64Array([999.0, 3.0, 0.0, 999.0]); // 2x2 matrix - diagonal values ignored
+      const B = new Float64Array([1.0, 7.0, 2.0, 8.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
-        BLASDiag.Unit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.NoTranspose,
+        Diagonal.Unit,
         2,
         2,
         1.0,
@@ -438,14 +427,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should solve triangular system from right", () => {
-      const A = [2.0, 0.0, 3.0, 4.0]; // 2x2 matrix
-      const B = [10.0, 14.0, 25.0, 31.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 3.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([10.0, 14.0, 25.0, 31.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Right,
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Right,
+        Triangular.Upper,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -463,14 +452,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle transpose", () => {
-      const A = [2.0, 3.0, 0.0, 4.0]; // 2x2 matrix
-      const B = [2.0, 12.0, 4.0, 20.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 3.0, 0.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([2.0, 12.0, 4.0, 20.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.Transpose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.Transpose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -480,7 +469,7 @@ describe("BLAS Level 3", () => {
         2
       );
 
-      // Solves A^T*X = B where A^T = [[2, 3], [0, 4]]
+      // Solves A^T*X = B where A^T = [new Float64Array([2, 3]), new Float64Array([0, 4])]
       expect(B[0]).toBeCloseTo(1.0);
       expect(B[1]).toBeCloseTo(2.25); // Fixed: (12 - 3*1)/4 = 2.25
       expect(B[2]).toBeCloseTo(2.0);
@@ -488,14 +477,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha scaling", () => {
-      const A = [2.0, 0.0, 0.0, 2.0]; // 2x2 matrix
-      const B = [4.0, 8.0, 6.0, 10.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 0.0, 2.0]); // 2x2 matrix
+      const B = new Float64Array([4.0, 8.0, 6.0, 10.0]); // 2x2 matrix
 
       dtrsm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         0.5,
@@ -515,14 +504,14 @@ describe("BLAS Level 3", () => {
 
   describe("DTRMM (Double precision triangular matrix multiply)", () => {
     it("should compute B = alpha*A*B with upper triangular A from left", () => {
-      const A = [2.0, 0.0, 3.0, 4.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 3.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Left,
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Upper,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -539,14 +528,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should compute B = alpha*A*B with lower triangular A from left", () => {
-      const A = [2.0, 3.0, 0.0, 4.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 3.0, 0.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -563,14 +552,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle unit diagonal", () => {
-      const A = [999.0, 0.0, 3.0, 999.0]; // 2x2 matrix - diagonal ignored
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([999.0, 0.0, 3.0, 999.0]); // 2x2 matrix - diagonal ignored
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Left,
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
-        BLASDiag.Unit,
+        Side.Left,
+        Triangular.Upper,
+        Transpose.NoTranspose,
+        Diagonal.Unit,
         2,
         2,
         1.0,
@@ -587,14 +576,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should compute B = alpha*B*A from right", () => {
-      const A = [2.0, 0.0, 3.0, 4.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 3.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Right,
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Right,
+        Triangular.Upper,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -611,14 +600,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle transpose", () => {
-      const A = [2.0, 3.0, 0.0, 4.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 3.0, 0.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.Transpose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.Transpose,
+        Diagonal.NonUnit,
         2,
         2,
         1.0,
@@ -636,14 +625,14 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha scaling", () => {
-      const A = [2.0, 0.0, 0.0, 2.0]; // 2x2 matrix
-      const B = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
+      const A = new Float64Array([2.0, 0.0, 0.0, 2.0]); // 2x2 matrix
+      const B = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
 
       dtrmm(
-        BLASSide.Left,
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
-        BLASDiag.NonUnit,
+        Side.Left,
+        Triangular.Lower,
+        Transpose.NoTranspose,
+        Diagonal.NonUnit,
         2,
         2,
         0.5,
@@ -663,13 +652,13 @@ describe("BLAS Level 3", () => {
   describe("DSYR2K (Double precision symmetric rank-2k update)", () => {
     it("should compute C = alpha*A*B^T + alpha*B*A^T + beta*C with lower triangle", () => {
       // A and B are 3x2 matrices
-      const A = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]; // 3x2 matrix
-      const B = [1.0, 2.0, 1.0, 1.0, 1.0, 2.0]; // 3x2 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x3 matrix
+      const A = new Float64Array([1.0, 3.0, 5.0, 2.0, 4.0, 6.0]); // 3x2 matrix
+      const B = new Float64Array([1.0, 2.0, 1.0, 1.0, 1.0, 2.0]); // 3x2 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x3 matrix
 
       dsyr2k(
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
+        Triangular.Lower,
+        Transpose.NoTranspose,
         3,
         2,
         1.0,
@@ -697,13 +686,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should compute C = alpha*A*B^T + alpha*B*A^T + beta*C with alpha and beta", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [2.0, 1.0, 1.0, 3.0]; // 2x2 matrix
-      const C = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([2.0, 1.0, 1.0, 3.0]); // 2x2 matrix
+      const C = new Float64Array([1.0, 0.0, 0.0, 1.0]); // 2x2 identity matrix
 
       dsyr2k(
-        BLASUplo.Lower,
-        BLASTranspose.NoTranspose,
+        Triangular.Lower,
+        Transpose.NoTranspose,
         2,
         2,
         2.0,
@@ -727,13 +716,13 @@ describe("BLAS Level 3", () => {
 
     it("should compute C = alpha*A^T*B + alpha*B^T*A + beta*C with transpose", () => {
       // A and B are 2x3 matrices (transposed in computation)
-      const A = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]; // 2x3 matrix
-      const B = [1.0, 1.0, 2.0, 1.0, 1.0, 2.0]; // 2x3 matrix
-      const C = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]; // 3x3 matrix
+      const A = new Float64Array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0]); // 2x3 matrix
+      const B = new Float64Array([1.0, 1.0, 2.0, 1.0, 1.0, 2.0]); // 2x3 matrix
+      const C = new Float64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]); // 3x3 matrix
 
       dsyr2k(
-        BLASUplo.Lower,
-        BLASTranspose.Transpose,
+        Triangular.Lower,
+        Transpose.Transpose,
         3,
         2,
         1.0,
@@ -756,13 +745,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle alpha = 0", () => {
-      const A = [1.0, 3.0, 2.0, 4.0]; // 2x2 matrix
-      const B = [2.0, 1.0, 1.0, 3.0]; // 2x2 matrix
-      const C = [5.0, 7.0, 6.0, 8.0]; // 2x2 matrix
+      const A = new Float64Array([1.0, 3.0, 2.0, 4.0]); // 2x2 matrix
+      const B = new Float64Array([2.0, 1.0, 1.0, 3.0]); // 2x2 matrix
+      const C = new Float64Array([5.0, 7.0, 6.0, 8.0]); // 2x2 matrix
 
       dsyr2k(
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
+        Triangular.Upper,
+        Transpose.NoTranspose,
         2,
         2,
         0.0,
@@ -782,13 +771,13 @@ describe("BLAS Level 3", () => {
     });
 
     it("should handle beta = 0", () => {
-      const A = [1.0, 0.0, 0.0, 1.0]; // 2x2 identity matrix
-      const B = [2.0, 0.0, 0.0, 2.0]; // 2x2 matrix - 2*identity
-      const C = [99.0, 99.0, 99.0, 99.0]; // 2x2 matrix - should be overwritten
+      const A = new Float64Array([1.0, 0.0, 0.0, 1.0]); // 2x2 identity matrix
+      const B = new Float64Array([2.0, 0.0, 0.0, 2.0]); // 2x2 matrix - 2*identity
+      const C = new Float64Array([99.0, 99.0, 99.0, 99.0]); // 2x2 matrix - should be overwritten
 
       dsyr2k(
-        BLASUplo.Upper,
-        BLASTranspose.NoTranspose,
+        Triangular.Upper,
+        Transpose.NoTranspose,
         2,
         2,
         1.0,
