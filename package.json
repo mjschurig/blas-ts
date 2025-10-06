@@ -27,16 +27,16 @@
     "mathematics",
     "numerical-computing"
   ],
-  "author": "Max",
+  "author": "mjschurig",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/username/blas-ts.git"
+    "url": "git+https://github.com/mjschurig/blas-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/username/blas-ts/issues"
+    "url": "https://github.com/mjschurig/blas-ts/issues"
   },
-  "homepage": "https://github.com/username/blas-ts#readme",
+  "homepage": "https://github.com/mjschurig/blas-ts#readme",
   "devDependencies": {
     "@eslint/js": "^9.37.0",
     "@types/jest": "^30.0.0",
@@ -55,8 +55,5 @@
     "node": ">=16.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@10.11.0",
-  "dependencies": {
-    "random-js": "^2.1.0"
-  }
+  "packageManager": "pnpm@10.11.0"
 }

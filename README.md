@@ -1,7 +1,7 @@
 # BLAS-TS
 
 [![npm version](https://badge.fury.io/js/blas-ts.svg)](https://badge.fury.io/js/blas-ts)
-[![Build Status](https://github.com/username/blas-ts/workflows/Build%20and%20Publish/badge.svg)](https://github.com/username/blas-ts/actions)
+[![Build Status](https://github.com/mjschurig/blas-ts/workflows/Build%20and%20Publish/badge.svg)](https://github.com/username/blas-ts/actions)
 
 Pure TypeScript implementation of BLAS (Basic Linear Algebra Subprograms).
 
@@ -27,7 +27,7 @@ npm install blas-ts
 ### Level 1 BLAS - Vector Operations
 
 ```typescript
-import { daxpy, ddot, dnrm2, dscal, dcopy } from 'blas-ts';
+import { daxpy, ddot, dnrm2, dscal, dcopy } from "blas-ts";
 
 // DAXPY: y = alpha * x + y
 const x = [1, 2, 3, 4];
@@ -51,7 +51,7 @@ dcopy(4, x, 1, y, 1); // y = x
 ### Level 2 BLAS - Matrix-Vector Operations
 
 ```typescript
-import { dgemv, dger, BLASTranspose } from 'blas-ts';
+import { dgemv, dger, BLASTranspose } from "blas-ts";
 
 // DGEMV: matrix-vector multiply y = alpha*A*x + beta*y
 const A = [1, 2, 3, 4, 5, 6]; // 2x3 matrix in column-major order
@@ -68,14 +68,27 @@ dger(2, 3, 1.0, x2, 1, y2, 1, A, 2);
 ### Level 3 BLAS - Matrix-Matrix Operations
 
 ```typescript
-import { dgemm, dsymm, BLASTranspose, BLASUplo, BLASSide } from 'blas-ts';
+import { dgemm, dsymm, BLASTranspose, BLASUplo, BLASSide } from "blas-ts";
 
 // DGEMM: general matrix multiply C = alpha*A*B + beta*C
 const A = [1, 2, 3, 4]; // 2x2 matrix
 const B = [5, 6, 7, 8]; // 2x2 matrix
 const C = [0, 0, 0, 0]; // 2x2 result matrix
-dgemm(BLASTranspose.NoTranspose, BLASTranspose.NoTranspose,
-      2, 2, 2, 1.0, A, 2, B, 2, 0.0, C, 2);
+dgemm(
+  BLASTranspose.NoTranspose,
+  BLASTranspose.NoTranspose,
+  2,
+  2,
+  2,
+  1.0,
+  A,
+  2,
+  B,
+  2,
+  0.0,
+  C,
+  2
+);
 
 // DSYMM: symmetric matrix multiply
 dsymm(BLASSide.Left, BLASUplo.Upper, 2, 2, 1.0, A, 2, B, 2, 0.0, C, 2);
@@ -145,24 +158,24 @@ All Level 3 operations use column-major matrix storage.
 
 ```typescript
 enum BLASTranspose {
-  NoTranspose,        // Use A
-  Transpose,          // Use A^T
-  ConjugateTranspose  // Use A^H (for complex matrices)
+  NoTranspose, // Use A
+  Transpose, // Use A^T
+  ConjugateTranspose, // Use A^H (for complex matrices)
 }
 
 enum BLASUplo {
-  Upper,  // Upper triangular
-  Lower   // Lower triangular
+  Upper, // Upper triangular
+  Lower, // Lower triangular
 }
 
 enum BLASDiag {
-  NonUnit,  // Diagonal is stored in matrix
-  Unit      // Diagonal is assumed to be 1
+  NonUnit, // Diagonal is stored in matrix
+  Unit, // Diagonal is assumed to be 1
 }
 
 enum BLASSide {
-  Left,   // op(A)*B
-  Right   // B*op(A)
+  Left, // op(A)*B
+  Right, // B*op(A)
 }
 ```
 

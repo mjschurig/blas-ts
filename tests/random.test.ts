@@ -1,4 +1,3 @@
-import { Random } from "random-js";
 import { dgemm, dsyrk } from "../src/level3";
 import { BLASTranspose, BLASUplo } from "../src/types";
 
@@ -8,14 +7,13 @@ const mimGenerator =
     return i + j * ld;
   };
 
-const random = new Random();
 describe("Random", () => {
   describe("DGEMM (Double precision general matrix multiply)", () => {
     it("should multiply two diagonal 2x2 matrices", () => {
-      const d1 = random.real(0, 1);
-      const d2 = random.real(0, 1);
-      const d3 = random.real(0, 1);
-      const d4 = random.real(0, 1);
+      const d1 = Math.random();
+      const d2 = Math.random();
+      const d3 = Math.random();
+      const d4 = Math.random();
       let A = [d1, 0, 0, d2];
       let B = [d3, 0, 0, d4];
       let C = [0.0, 0.0, 0.0, 0.0];
@@ -39,8 +37,8 @@ describe("Random", () => {
     });
 
     it("should multiply two 2x2 matrices", () => {
-      let A = new Array(4).fill(0).map(() => random.real(0, 1));
-      let B = new Array(4).fill(0).map(() => random.real(0, 1));
+      let A = new Array(4).fill(0).map(() => Math.random());
+      let B = new Array(4).fill(0).map(() => Math.random());
       let C = [0.0, 0.0, 0.0, 0.0];
       const mim = mimGenerator(2);
       let expected = [

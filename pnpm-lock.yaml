@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      random-js:
-        specifier: ^2.1.0
-        version: 2.1.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.37.0
@@ -1503,9 +1499,6 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-
-  random-js@2.1.0:
-    resolution: {integrity: sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==}
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
@@ -3534,8 +3527,6 @@ snapshots:
   pure-rand@7.0.1: {}
 
   queue-microtask@1.2.3: {}
-
-  random-js@2.1.0: {}
 
   react-is@18.3.1: {}
 
