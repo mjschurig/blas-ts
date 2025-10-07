@@ -1,0 +1,40 @@
+{
+  "name": "BLAS-TS Documentation",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "theme": "default",
+  "includeVersion": true,
+  "excludePrivate": false,
+  "excludeProtected": false,
+  "excludeExternals": true,
+  "readme": "README.md",
+  "categorizeByGroup": false,
+  "defaultCategory": "Other",
+  "categoryOrder": [
+    "Types",
+    "Level 1 BLAS",
+    "Level 2 BLAS",
+    "Level 3 BLAS",
+    "*"
+  ],
+  "sort": ["source-order"],
+  "visibilityFilters": {
+    "protected": false,
+    "private": false,
+    "inherited": true,
+    "external": false
+  },
+  "searchInComments": true,
+  "cleanOutputDir": true,
+  "titleLink": "https://github.com/mjschurig/blas-ts",
+  "navigationLinks": {
+    "GitHub": "https://github.com/mjschurig/blas-ts",
+    "NPM": "https://www.npmjs.com/package/blas-ts"
+  },
+  "sidebarLinks": {
+    "GitHub Repository": "https://github.com/mjschurig/blas-ts",
+    "Issues": "https://github.com/mjschurig/blas-ts/issues"
+  },
+  "plugin": [],
+  "logLevel": "Info"
+}
