@@ -56,7 +56,7 @@ jobs:
         run: pnpm build
 
       - name: Generate documentation
-        run: pnpm docs
+        run: pnpm run docs
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
