@@ -7,6 +7,8 @@ Pure TypeScript implementation of BLAS (Basic Linear Algebra Subprograms).
 
 This package provides high-performance linear algebra operations implemented in pure TypeScript, following the reference FORTRAN BLAS implementations for accuracy and performance.
 
+View the [documentation](https://mjschurig.github.io/blas-ts/).
+
 ## Features
 
 - 🚀 **Pure TypeScript** - No native dependencies, works everywhere
